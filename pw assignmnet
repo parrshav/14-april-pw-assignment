@@ -1,0 +1,55 @@
+Ensemble Techniques  And Its Types-4
+Assignment Questions 
+Assignment 
+Build a random forest classifier to predict the risk of heart disease based on a dataset of patient  information. The dataset contains 303 instances with 14 features, including age, sex, chest pain type,  resting blood pressure, serum cholesterol, and maximum heart rate achieved. 
+Dataset link: https://drive.google.com/file/d/1bGoIE4Z2kG5nyh-fGZAJ7LH0ki3UfmSJ/view? usp=share_link 
+Q1. Preprocess the dataset by handling missing values, encoding categorical variables, and scaling the  numerical features if necessary. 
+Q2. Split the dataset into a training set (70%) and a test set (30%). 
+Q3. Train a random forest classifier on the training set using 100 trees and a maximum depth of 10 for each  tree. Use the default values for other hyperparameters. 
+Q4. Evaluate the performance of the model on the test set using accuracy, precision, recall, and F1 score.  
+Q5. Use the feature importance scores to identify the top 5 most important features in predicting heart  disease risk. Visualise the feature importances using a bar chart. 
+Q6. Tune the hyperparameters of the random forest classifier using grid search or random search. Try  different values of the number of trees, maximum depth, minimum samples split, and minimum samples  leaf. Use 5-fold cross-validation to evaluate the performance of each set of hyperparameters. 
+Q7. Report the best set of hyperparameters found by the search and the corresponding performance  metrics. Compare the performance of the tuned model with the default model. 
+Q8. Interpret the model by analysing the decision boundaries of the random forest classifier. Plot the  decision boundaries on a scatter plot of two of the most important features. Discuss the insights and  limitations of the model for predicting heart disease risk. 
+Note:  Create your assignment in Jupyter notebook and upload it to GitHub & share that github repository  link through your dashboard. Make sure the repository is public.
+Data Science Masters 
+
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+from sklearn.model_selection import GridSearchCV,cross_validate
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import classification_report
+forest=RandomForestClassifier()
+
+df=pd.read_csv('dataset.csv')
+df.fillna(df.mean(),inplace=True)
+features=['age','trestbps','chol','thalach','oldpeak']
+scalar=StandardScaler()
+df[features]=scalar.fit_transform(df[features])
+x=df.iloc[:,:-1]
+y=df['target']
+x_train,x_test,y_train,y_test=train_test_split(x,y, test_size=0.3,random_state=42)
+forest.fit(x_train,y_train)
+y_pred=forest.predict(x_test)
+accuracy=accuracy_score(y_pred,y_test)
+report=classification_report(y_pred,y_test)
+print(accuracy)
+print(report)
+param_grid = {
+    'n_estimators': [50, 100, 150],
+    'max_depth': [5, 10, 15],
+    'min_samples_split': [2, 5, 10],
+    'min_samples_leaf': [1, 2, 4]
+}
+grid_search = GridSearchCV(forest, param_grid, cv=5, n_jobs=-1)
+grid_search.fit(x_train,y_train)
+best_moddel=grid_search.best_estimator_
+y_pred1=best_moddel.predict(x_test)
+print(grid_search.best_params_)
+accuracy1=accuracy_score(y_pred,y_test)
+print(accuracy1)
+
